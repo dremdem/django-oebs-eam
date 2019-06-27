@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/static/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="/static/themes/default/style.min.css"/>
+    <script src="/static/jstree.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div>
+    <form action="/" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit">
+    </form>
+</div>
+<div id="container"></div>
+<script>
+    $(function () {
+        $('#container').jstree({
+            'core': {
+                'data': {
+                    "url": "/asset_tree/" + $('#id_root_asset').val(),
+                    "dataType": "json" // needed only if you do not supply JSON headers
+                }
+            }
+        });
+    });
+</script>
+
+
+</body>
+</html>
