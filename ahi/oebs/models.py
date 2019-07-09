@@ -114,15 +114,19 @@ def set_parameter_value(name, par_type, value):
     parameter.save()
 
 
-def get_root_list() -> list:
+def get_root_list(have_parent: bool = False) -> list:
     """
     Fetch all asset without parent
+    :param have_parent: Is root asset will have a parent asset
     :return: list of all assets with ID
     """
 
+    have_parent_query = 'select a.instance_id, a.asset_number from assets a where parent_instance_id is null order by a.asset_number'
+    non_parent_query = 'select a.instance_id, a.asset_number from assets a order by a.asset_number'
+    sql_query = have_parent_query if have_parent else non_parent_query
+
     with connections['default'].cursor() as cursor:
-        cursor.execute(
-            "select a.instance_id, a.asset_number from assets a where parent_instance_id is null")
+        cursor.execute(sql_query)
         return cursor.fetchall()
 
 
@@ -231,3 +235,8 @@ def build_json_tree(assets_list: list, root_asset_id: int = settings.DEFAULT_ASS
     process_node(assets_list, root_asset, json_tree)
 
     return json_tree
+
+
+def get_parameters():
+    data = [{'name': p.name, 'value': p.value} for p in Parameter.objects.all()]
+    return {'data': data}

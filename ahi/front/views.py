@@ -4,7 +4,7 @@ View for all front
 from django.shortcuts import render
 from django.http import JsonResponse
 from oebs.models import get_parameter_value, set_parameter_value, get_local_asset_hierarchy, \
-    sync_asset_hierarchy, build_json_tree
+    sync_asset_hierarchy, build_json_tree, get_parameters
 from front.forms import RootChoiceForm
 from django.conf import settings
 
@@ -41,3 +41,7 @@ def asset_tree(request, root_asset_id=settings.DEFAULT_ASSET_ID):
     json_tree = build_json_tree(asset_hierarchy, root_asset_id)
 
     return JsonResponse(json_tree)
+
+
+def parameters(request):
+    return JsonResponse(get_parameters())
