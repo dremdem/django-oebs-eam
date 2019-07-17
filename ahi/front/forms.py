@@ -4,6 +4,12 @@ Forms related to frontend
 from oebs.models import Asset
 from django import forms
 
+from django_select2.forms import (
+    HeavySelect2MultipleWidget, HeavySelect2Widget, ModelSelect2MultipleWidget,
+    ModelSelect2TagWidget, ModelSelect2Widget, Select2MultipleWidget,
+    Select2Widget
+)
+
 
 class RootChoiceForm(forms.Form):
     """
@@ -28,3 +34,15 @@ class RootChoiceForm(forms.Form):
         # Choices list should be init when Class will be used and not when module will be imported
         forms.Form.__init__(self, *args, **kwargs)
         self.set_root_choices()
+
+
+NUMBER_CHOICES = [
+    (1, 'One'),
+    (2, 'Two'),
+    (3, 'Three'),
+    (4, 'Four'),
+]
+
+
+class Select2WidgetForm(forms.Form):
+    number = forms.ChoiceField(widget=Select2Widget, choices=NUMBER_CHOICES, required=False)

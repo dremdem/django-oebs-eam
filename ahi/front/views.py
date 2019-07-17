@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from oebs.models import get_parameter_value, set_parameter_value, get_local_asset_hierarchy, \
     sync_asset_hierarchy, build_json_tree, get_parameters
-from front.forms import RootChoiceForm
+from front.forms import RootChoiceForm, Select2WidgetForm
 from django.conf import settings
 
 
@@ -33,7 +33,9 @@ def index(request):
         root_choice_form = RootChoiceForm(
             initial={'root_asset': root_asset, 'is_sync_hierarchy': is_sync_hierarchy})
 
-    return render(request, 'index.html', {'form': root_choice_form})
+    select2_form = Select2WidgetForm()
+
+    return render(request, 'index.html', {'form': root_choice_form, 'form_select2': select2_form})
 
 
 def asset_tree(request, root_asset_id=settings.DEFAULT_ASSET_ID):

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'oebs.apps.OebsConfig',
     'front.apps.FrontConfig',
+    'django_select2',
 ]
 
 MIDDLEWARE = [

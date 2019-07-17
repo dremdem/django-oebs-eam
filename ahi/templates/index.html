@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/static/jstree/themes/default/style.min.css"/>
     <meta charset="UTF-8">
     <title>Title</title>
+    {{ form_select2.media.css }}
 </head>
 <body>
 <script src="/static/jquery-3.4.1.min.js"></script>
@@ -58,6 +59,14 @@
 </div>
 
 <div>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form_select2 }}
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
+<div>
     <form action="/" method="post">
         {% csrf_token %}
         {{ form }}
@@ -104,6 +113,6 @@ $(document).ready(function () {
 
 </script>
 
-
+{{ form_select2.media.js }}
 </body>
 </html>
