@@ -3,6 +3,7 @@ Forms related to frontend
 """
 from oebs.models import Asset
 from django import forms
+from django.utils.encoding import force_text
 
 from django_select2.forms import (
     HeavySelect2MultipleWidget, HeavySelect2Widget, ModelSelect2MultipleWidget,
@@ -36,13 +37,20 @@ class RootChoiceForm(forms.Form):
         self.set_root_choices()
 
 
-NUMBER_CHOICES = [
-    (1, 'One'),
-    (2, 'Two'),
-    (3, 'Three'),
-    (4, 'Four'),
-]
+class RootAssetWidget(ModelSelect2Widget):
+    model = Asset
+    search_fields = [
+        'asset_number__icontains'
+    ]
+
+    def label_from_instance(self, obj):
+        return force_text(obj.asset_number)
 
 
-class Select2WidgetForm(forms.Form):
-    number = forms.ChoiceField(widget=Select2Widget, choices=NUMBER_CHOICES, required=False)
+class RootAssetSelect2WidgetForm(forms.ModelForm):
+    class Meta:
+        model = Asset
+        fields = ['asset_number']
+        widgets = {
+            'asset_number': RootAssetWidget(attrs={'data-width': '100%', 'class': 'form-group'})
+        }

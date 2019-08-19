@@ -2,10 +2,10 @@
 View for all front
 """
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from oebs.models import get_parameter_value, set_parameter_value, get_local_asset_hierarchy, \
-    sync_asset_hierarchy, build_json_tree, get_parameters
-from front.forms import RootChoiceForm, Select2WidgetForm
+    sync_asset_hierarchy, build_json_tree, get_parameters, Asset
+from front.forms import RootChoiceForm, RootAssetSelect2WidgetForm
 from django.conf import settings
 
 
@@ -33,9 +33,9 @@ def index(request):
         root_choice_form = RootChoiceForm(
             initial={'root_asset': root_asset, 'is_sync_hierarchy': is_sync_hierarchy})
 
-    select2_form = Select2WidgetForm()
+    select2_form = RootAssetSelect2WidgetForm()
 
-    return render(request, 'index.html', {'form': root_choice_form, 'form_select2': select2_form})
+    return render(request, 'index.html', {'form': root_choice_form, 'form_select2': select2_form, 'root_asset': root_asset})
 
 
 def asset_tree(request, root_asset_id=settings.DEFAULT_ASSET_ID):
@@ -47,3 +47,9 @@ def asset_tree(request, root_asset_id=settings.DEFAULT_ASSET_ID):
 
 def parameters(request):
     return JsonResponse(get_parameters())
+
+
+def set_root_asset(request):
+    root_asset = Asset.objects.filter(pk=request.POST['asset_number'])[0].instance_id
+    set_parameter_value('root_asset', 'I', root_asset)
+    return HttpResponse()
