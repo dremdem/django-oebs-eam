@@ -30,129 +30,149 @@
 </div>
 
 <!-- Root Asset -->
-    <div class="modal fade" id="raModal" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="modal_title">Edit parameter: Root Asset</h4>
-                </div>
-                <div class="modal-body">
-                    <form id="ra_form" role="form">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="value"><span class="glyphicon glyphicon-file"></span>
-                                Value</label>
-                            {{ form_select2.asset_number }}
-                        </div>
-                        <button type="submit" class="btn btn-success btn-block"><span
-                                class="glyphicon glyphicon-ok"></span> OK
-                        </button>
-                    </form>
-                </div>
+<div class="modal fade" id="raModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal_title">Edit parameter: Root Asset</h4>
+            </div>
+            <div class="modal-body">
+                <form id="ra_form" role="form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="value"><span class="glyphicon glyphicon-file"></span>
+                            Value</label>
+                        {{ form_select2.asset_number }}
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block"><span
+                            class="glyphicon glyphicon-ok"></span> OK
+                    </button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- is sync hierarchy -->
-    <div class="modal fade" id="ishModal" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="modal_title">Edit parameter: Is sync hierarchy</h4>
-                </div>
-                <div class="modal-body">
-                    <form role="form">
-                        <div class="form-group">
-                            <label for="value"><span class="glyphicon glyphicon-file"></span>
-                                Value</label>
-                            <select name="value" id="value">
-                                <option value=""></option>
-                                <option value=""></option>
-                                <option value=""></option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-success btn-block"><span
-                                class="glyphicon glyphicon-ok"></span> OK
-                        </button>
-                    </form>
-                </div>
+<!-- is sync hierarchy -->
+<div class="modal fade" id="ishModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal_title">Edit parameter: Is sync hierarchy</h4>
+            </div>
+            <div class="modal-body">
+                <form id="ish_form" role="form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="is_sync"><span class="glyphicon glyphicon-file"></span>
+                            Synchronize with OEBS </label>
+                        <input type="checkbox" name="is_sync" id="is_sync" checked>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block"><span
+                            class="glyphicon glyphicon-ok"></span> OK
+                    </button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
 
-    <div>
-        <form action="/" method="post">
-            {% csrf_token %}
-            {{ form }}
-            <input type="submit" value="Submit">
-        </form>
-    </div>
-    <div id="container"></div>
-    <script>
+{# DIV for JSTREE#}
 
-        $(function () {
-            console.log($('#id_root_asset').val());
-            $('#container').jstree({
-                'core': {
-                    'data': {
-                        "url": "/asset_tree/" + "{{ root_asset }}",
-                        "dataType": "json" // needed only if you do not supply JSON headers
-                    }
+<div id="container"></div>
+
+
+<script>
+
+    $(function () {
+        console.log($('#id_root_asset').val());
+        $('#container').jstree({
+            'core': {
+                'data': {
+                    "url": "/asset_tree/" + "{{ root_asset }}",
+                    "dataType": "json" // needed only if you do not supply JSON headers
                 }
-            });
+            }
         });
+    });
 
 
-        $(document).ready(function () {
-            let table = $('#table_id').DataTable({
-                "ajax": '/parameters',
-                "columns": [
-                    {'data': 'name'},
-                    {'data': 'value'},
-                    {
-                        "data": null,
-                        "defaultContent": '<button type="button" class="btn btn-info">Edit</button>'
-                    }
-                ],
-                'paging': false,
-                'searching': false,
-                "info": false,
-            });
-            $('#table_id tbody').on('click', 'button', function () {
-                let data = table.row($(this).parents('tr')).data();
-                $('#name').val(data['name']);
-                $('#value').val(data['value']);
-                if (data['name'] === "root_asset") {
-                    $("#raModal").modal();
-                } else {
-                    $("#ishModal").modal();
+    $(document).ready(function () {
+        let table = $('#table_id').DataTable({
+            "ajax": '/parameters',
+            "columns": [
+                {'data': 'name'},
+                {'data': 'value'},
+                {
+                    "data": null,
+                    "defaultContent": '<button type="button" class="btn btn-info">Edit</button>'
                 }
-            });
+            ],
+            'paging': false,
+            'searching': false,
+            "info": false,
         });
-
-        $('#ra_form').on('submit', function (e) {
-            e.preventDefault();
-            let $this = $(this);
-            let type = $('#type').val();
-            let method = '';
-            let url = '/set_root_asset';
-            method = 'POST';
-
-               $.ajax({
-                url: url,
-                method: method,
-                success: function (data, textStatus, jqXHR) {
-                    location.reload();
-                },
-                data: $this.serialize()}).error(function (jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR)
-            });
+        $('#table_id tbody').on('click', 'button', function () {
+            let data = table.row($(this).parents('tr')).data();
+            $('#name').val(data['name']);
+            $('#value').val(data['value']);
+            if (data['name'] === "root_asset") {
+                $("#raModal").modal();
+            } else {
+                $("#ishModal").modal();
+                if(!data['value'])
+                    $("#is_sync").prop("checked", false);
+                else
+                    $("#is_sync").prop("checked", true);
+            }
         });
-    </script>
+    });
 
-    {{ form_select2.media.js }}
+    $('#ish_form').on('submit', function (e) {
+        e.preventDefault();
+        let $this = $(this);
+        let type = $('#type').val();
+        let method = '';
+        let url = '/set_sync';
+        method = 'POST';
+
+        $.ajax({
+            url: url,
+            method: method,
+            success: function (data, textStatus, jqXHR) {
+                location.reload();
+            },
+            data: $this.serialize()
+        });
+    });
+
+
+    $('#ra_form').on('submit', function (e) {
+        e.preventDefault();
+        let $this = $(this);
+        let type = $('#type').val();
+        let method = '';
+        let url = '/set_root_asset';
+        method = 'POST';
+
+        $.ajax({
+            url: url,
+            method: method,
+            success: function (data, textStatus, jqXHR) {
+                location.reload();
+            },
+            data: $this.serialize()
+        }).error(function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR)
+        });
+    });
+
+
+</script>
+
+{{ form_select2.media.js }}
 </body>
 </html>

@@ -1,0 +1,50 @@
+POST http://localhost:8000/set_sync
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-08-20T115103.403.html
+
+###
+
+POST http://localhost:8000/set_root_asset
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-08-01T012802.403.html
+
+###
+
+POST http://localhost:8000/set_root_asset
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-08-01T012446.403.html
+
+###
+
+POST http://localhost:8000/set_root_asset
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-08-01T012345.403.html
+
+###
+
+POST http://localhost:8080/set_root_asset
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+POST http://localhost:8080/set_root_asset
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+POST http://localhost:8080/set_root_asset
+Accept: */*
+Cache-Control: no-cache
+
+###
+
