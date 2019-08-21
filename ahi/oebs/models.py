@@ -8,18 +8,6 @@ from django.db import connections
 from django.conf import settings
 
 
-class AssetHierarchy(models.Model):
-    """
-    Asset hierarchy for hierarchy tree
-    """
-
-    asset_number = models.CharField(max_length=200, verbose_name='Asset number')
-    serial_number = models.CharField(max_length=200, verbose_name='Serial number')
-    description = models.CharField(max_length=500, verbose_name='Description', null=True,
-                                   blank=True)
-    level = models.IntegerField()
-
-
 class Asset(models.Model):
     """
     Assets from source DB
