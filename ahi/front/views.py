@@ -5,13 +5,13 @@ from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from oebs.models import get_parameter_value, set_parameter_value, get_local_asset_hierarchy, \
     sync_asset_hierarchy, build_json_tree, get_parameters, Asset
-from front.forms import RootChoiceForm, RootAssetSelect2WidgetForm
+from front.forms import RootAssetSelect2WidgetForm
 from django.conf import settings
 
 
 def index(request):
     """
-    Starting page
+    Main page
     """
     is_sync_hierarchy = get_parameter_value('is_sync_hierarchy', default_value=True)
     if is_sync_hierarchy:
