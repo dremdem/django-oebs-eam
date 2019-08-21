@@ -3,8 +3,9 @@ View for all front
 """
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
-from oebs.models import get_parameter_value, set_parameter_value, get_local_asset_hierarchy, \
-    sync_asset_hierarchy, build_json_tree, get_parameters, Asset
+from oebs.utils import get_parameter_value, set_parameter_value, get_local_asset_hierarchy, \
+    sync_asset_hierarchy, build_json_tree, get_parameters
+from oebs.models import Asset
 from front.forms import RootAssetSelect2WidgetForm
 from django.conf import settings
 
