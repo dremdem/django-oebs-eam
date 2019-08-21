@@ -156,7 +156,10 @@ def build_json_tree(assets_list: list, root_asset_id: int = settings.DEFAULT_ASS
     return json_tree
 
 
-def get_parameters():
+def get_parameters() -> dict:
+    """
+    Build dict with parameters for parameters's table
+    """
     data = [{'name': p.name, 'value': p.value} for p in Parameter.objects.all()]
     return {'data': data}
 
