@@ -10,19 +10,54 @@ pytestmark = pytest.mark.django_db
 fake = Faker()
 
 
-def generate_asset_groups():
-    asset_groups = []
+@pytest.fixture(scope='module')
+def asset_groups():
+    ag = []
     for g in range(20):
-        asset_groups.append('%s_%s' % (fake.word(), fake.word()))
-    print(asset_groups)
+        ag.append('%s_%s' % (fake.word(), fake.word()))
+    return ag
 
 
-# def generate_assets():
-#     for a in range(100):
+def get_asset_child(instance_id: int, instances_dict: list) -> list:
+    """
+    Get all child instance_ids
+    :param instance_id:
+    :param instances_dict:
+    :return: dict of instance_ids
+    """
+
+    instances_dict.append(instance_id)
+
+    asset = Asset.objects.get(instance_id=instance_id)
+
+
+def get_random_parent_asset(instance_id: int) -> int:
+    """
+    get random parent asset not linked to any child assets
+    :param instance_id: asset instance_id
+    """
+
+    # get the list of all child's instance_id
+    # child_instance_ids = Asset.objects.
+    pass
+
+def assets():
+    """
+    Build an asset hierarchy
+    """
+    a = []
+    for a in range(100):
+        Asset(asset_number=fake.company(),
+              asset_group=asset_groups[fake.pyint(0, 19, 1)],
+              serial_number=fake.pystr(max_chars=15),
+              item_type=Asset.ITEM_TYPES[fake.pyint(0, 1)],
+              instance_id=a).save()
+
+    for a in Asset.objects.all():
+        a.parent_instance_id = get_random_parent_asset(a.instance_id)
 
 
 def setup():
-    generate_asset_groups()
     Parameter(name='is_sync_hierarchy', parameter_type='B', boolean_value=True).save()
     Asset(asset_number=fake.name())
 

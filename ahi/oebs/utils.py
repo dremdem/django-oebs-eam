@@ -5,6 +5,7 @@ Utils for operating models
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import connections
 from django.conf import settings
+from django.db.models import Subquery
 from .models import Parameter, Asset
 
 
@@ -95,8 +96,8 @@ def sync_asset_hierarchy() -> bool:
     with connections['oebs'].cursor() as cursor:
         cursor.execute(
             """select a.asset_number, a.serial_number, 
-            a.parent_instance_id, a.INSTANCE_ID, a.ASSET_DESCRIPTION, 
-            a.asset_group, a.asset_group_type from assets_uv a""")
+            a.parent_instance_id, a.INSTANCE_ID, a.DESCRIPTION, 
+            a.asset_group, a.item_type from assets_uv2 a""")
         result = [
             Asset(asset_number=i[0], serial_number=i[1], parent_instance_id=i[2], instance_id=i[3],
                   description=i[4], asset_group=i[5], item_type=i[6])
@@ -105,6 +106,8 @@ def sync_asset_hierarchy() -> bool:
     Asset.objects.all().delete()
 
     Asset.objects.bulk_create(result)
+
+    assets = Asset.objects.all()
 
     return True
 
@@ -162,4 +165,3 @@ def get_parameters() -> dict:
     """
     data = [{'name': p.name, 'value': p.value} for p in Parameter.objects.all()]
     return {'data': data}
-

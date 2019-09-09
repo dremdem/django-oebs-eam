@@ -20,8 +20,9 @@ class Asset(models.Model):
     asset_group = models.CharField(max_length=200, verbose_name='Asset group')
     item_type = models.CharField(max_length=2, verbose_name='Item type', choices=ITEM_TYPES)
 
-    instance_id = models.IntegerField()
-    parent_instance_id = models.IntegerField(null=True, blank=True)
+    instance_id = models.IntegerField(primary_key=True)
+    parent_instance_id = models.IntegerField(blank=True, null=True)
+    parent = models.ForeignKey("self", on_delete=models.PROTECT, blank=True, null=True)
     description = models.CharField(max_length=500, verbose_name='Description', null=True,
                                    blank=True)
 
