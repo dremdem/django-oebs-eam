@@ -5,7 +5,6 @@ Utils for operating models
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import connections
 from django.conf import settings
-from django.db.models import Subquery
 from .models import Parameter, Asset
 
 
