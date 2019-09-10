@@ -106,7 +106,9 @@ def sync_asset_hierarchy() -> bool:
 
     Asset.objects.bulk_create(result)
 
-    assets = Asset.objects.all()
+    for a in Asset.objects.filter(parent_instance_id__isnull=False):
+        a.parent = Asset.objects.get(pk=a.parent_instance_id)
+        a.save()
 
     return True
 

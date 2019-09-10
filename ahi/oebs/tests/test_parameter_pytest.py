@@ -41,6 +41,7 @@ def get_random_parent_asset(instance_id: int) -> int:
     # child_instance_ids = Asset.objects.
     pass
 
+
 def assets():
     """
     Build an asset hierarchy
