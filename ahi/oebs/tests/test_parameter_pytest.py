@@ -1,7 +1,7 @@
 import pytest
 
 from faker import Faker
-from oebs.utils import get_parameter_value, set_parameter_value
+from oebs.utils import get_parameter_value, set_parameter_value, get_local_asset_hierarchy
 from oebs.models import Parameter, Asset
 
 pytestmark = pytest.mark.django_db
@@ -122,3 +122,10 @@ def test_get_parameter_value():
 def test_set_parameter_value():
     set_parameter_value('test_text_value', 'T', 'test')
     assert Parameter.objects.get(name='test_text_value').text_value == 'test'
+
+
+def test_get_local_asset_hierarchy():
+    lah = get_local_asset_hierarchy(root=0)
+    assert type(lah) == list
+    assert len(lah) > 0
+    assert lah[0]['id'] == 0
