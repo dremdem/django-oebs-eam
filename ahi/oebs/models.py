@@ -40,6 +40,11 @@ class Asset(models.Model):
 
         return item_icons[item_type]
 
+    def save(self, *args, **kwargs):
+        if self.parent_instance_id and not self.parent:
+            self.parent = Asset.objects.get(pk=self.parent_instance_id)
+        super().save(*args, **kwargs)
+
 
 class Parameter(models.Model):
     """

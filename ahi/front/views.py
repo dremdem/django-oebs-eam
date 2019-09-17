@@ -8,12 +8,15 @@ from oebs.utils import get_parameter_value, set_parameter_value, get_local_asset
 from oebs.models import Asset
 from front.forms import RootAssetSelect2WidgetForm
 from django.conf import settings
+from oebs.tests.test_parameter_pytest import test_assets
 
 
 def index(request):
     """
     Main page
     """
+
+
 
     # synchronize a hierarchy
     is_sync_hierarchy = get_parameter_value('is_sync_hierarchy', default_value=True)

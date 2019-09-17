@@ -6,7 +6,6 @@ from oebs.models import Parameter, Asset
 
 pytestmark = pytest.mark.django_db
 
-
 fake = Faker()
 
 
@@ -32,7 +31,6 @@ def get_asset_child(instance_id: int, instances_dict: list) -> list:
 
 
 def get_child_assets_id(asset_list: list, asset_id: int) -> list:
-
     for child_asset in Asset.objects.get(pk=asset_id).asset_set.all():
         if child_asset.asset_set.exists():
             asset_list += get_child_assets_id(asset_list, child_asset.instance_id)
@@ -41,7 +39,7 @@ def get_child_assets_id(asset_list: list, asset_id: int) -> list:
     return asset_list
 
 
-def get_random_parent_asset(instance_id: int) -> int:
+def get_random_parent_asset(instance_id: int, instance_start_id, instance_end_id) -> int:
     """
     get random parent asset not linked to any child assets
     :param instance_id: asset instance_id
@@ -49,36 +47,65 @@ def get_random_parent_asset(instance_id: int) -> int:
 
     child_list = [instance_id]
     child_list = get_child_assets_id(child_list, instance_id)
-    all_list = list(Asset.objects.values_list('instance_id', flat=True))
+    all_list = list(Asset.objects.filter(pk__gte=instance_start_id, pk__lt=instance_end_id).
+                    values_list('instance_id', flat=True))
     possible_parent_list = [a for a in all_list if a not in child_list]
-    return possible_parent_list[fake.pyint(max_value=len(possible_parent_list))]
+    return possible_parent_list[fake.pyint(max_value=len(possible_parent_list) - 1)]
 
 
-def assets():
+def test_assets(asset_groups):
     """
     Build an asset hierarchy
     """
     a = []
-    for a in range(100):
+
+    # root asset
+    Asset(asset_number='Root',
+          asset_group=asset_groups[fake.pyint(0, 19, 1)],
+          serial_number=fake.pystr(max_chars=15),
+          item_type='AG',
+          instance_id=0).save()
+
+    # structure assets
+    for a in range(1, 15):
         Asset(asset_number=fake.company(),
               asset_group=asset_groups[fake.pyint(0, 19, 1)],
               serial_number=fake.pystr(max_chars=15),
-              item_type=Asset.ITEM_TYPES[fake.pyint(0, 1)],
+              item_type='AG',
               instance_id=a).save()
 
-    for a in Asset.objects.all():
-        a.parent_instance_id = get_random_parent_asset(a.instance_id)
+    # connect structure to root
+    for a in Asset.objects.all()[1:]:
+        p = get_random_parent_asset(a.instance_id, 0, 15)
+        a.parent_instance_id = p
         a.save()
+
+
+    #
+    # # MC assets
+    # for a in range(15, 40):
+    #     Asset(asset_number=fake.company(),
+    #           asset_group=asset_groups[fake.pyint(0, 19, 1)],
+    #           serial_number=fake.pystr(max_chars=15),
+    #           item_type='AG',
+    #           instance_id=a).save()
+    #
+    # # rebuildable assets
+    # for a in range(40, 100):
+    #     Asset(asset_number=fake.company(),
+    #           asset_group=asset_groups[fake.pyint(0, 19, 1)],
+    #           serial_number=fake.pystr(max_chars=15),
+    #           item_type='RB',
+    #           instance_id=a).save()
+
+    #
+
+    pass
 
 
 def setup():
     Parameter(name='is_sync_hierarchy', parameter_type='B', boolean_value=True).save()
-    Asset(asset_number=fake.name())
-
-
-def test_blabla():
-    al = [10002]
-    print(get_child_assets_id(al, 10002))
+    # assets()
 
 # def test_get_parameter_value():
 #     assert get_parameter_value('is_sync_hierarchy') is True

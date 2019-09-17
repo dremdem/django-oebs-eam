@@ -83,7 +83,7 @@ DATABASES = {
         'NAME': os.getenv('OEBS_CONNECTION_NAME'),
         'USER': os.getenv('OEBS_USERNAME'),
         'PASSWORD': os.getenv('OEBS_PASSWORD'),
-    }
+    },
 }
 
 DEFAULT_ASSET_ID = os.getenv('OEBS_DEFAULT_ASSET_ID', 0)

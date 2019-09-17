@@ -49,12 +49,13 @@ def get_root_list(have_parent: bool = False) -> list:
         return cursor.fetchall()
 
 
-def get_local_asset_hierarchy(root: int = settings.DEFAULT_ASSET_ID) -> list:
+def get_local_asset_hierarchy(root: int = settings.DEFAULT_ASSET_ID, conn: str = 'default') -> list:
     """
     :param root: get local asset hierarchy with level starting by root ID ( instance_id )
+    :param conn: what the exact connection will be used
     :return: list of assets
     """
-    with connections['default'].cursor() as cursor:
+    with connections[conn].cursor() as cursor:
         cursor.execute(
             """with recursive asset_tree as (
             select 0 as level, asset_number, serial_number, description, 
@@ -105,10 +106,6 @@ def sync_asset_hierarchy() -> bool:
     Asset.objects.all().delete()
 
     Asset.objects.bulk_create(result)
-
-    for a in Asset.objects.filter(parent_instance_id__isnull=False):
-        a.parent = Asset.objects.get(pk=a.parent_instance_id)
-        a.save()
 
     return True
 
