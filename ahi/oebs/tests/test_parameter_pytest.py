@@ -9,7 +9,6 @@ pytestmark = pytest.mark.django_db
 fake = Faker()
 
 
-@pytest.fixture(scope='module')
 def asset_groups():
     ag = []
     for g in range(20):
@@ -53,15 +52,15 @@ def get_random_parent_asset(instance_id: int, instance_start_id, instance_end_id
     return possible_parent_list[fake.pyint(max_value=len(possible_parent_list) - 1)]
 
 
-def test_assets(asset_groups):
+def build_assets():
     """
     Build an asset hierarchy
     """
-    a = []
+    ag = asset_groups()
 
     # root asset
     Asset(asset_number='Root',
-          asset_group=asset_groups[fake.pyint(0, 19, 1)],
+          asset_group=ag[fake.pyint(0, 19, 1)],
           serial_number=fake.pystr(max_chars=15),
           item_type='AG',
           instance_id=0).save()
@@ -69,7 +68,7 @@ def test_assets(asset_groups):
     # structure assets
     for a in range(1, 15):
         Asset(asset_number=fake.company(),
-              asset_group=asset_groups[fake.pyint(0, 19, 1)],
+              asset_group=ag[fake.pyint(0, 19, 1)],
               serial_number=fake.pystr(max_chars=15),
               item_type='AG',
               instance_id=a).save()
@@ -84,7 +83,7 @@ def test_assets(asset_groups):
     # MC assets
     for a in range(15, 40):
         Asset(asset_number=fake.company(),
-              asset_group=asset_groups[fake.pyint(0, 19, 1)],
+              asset_group=ag[fake.pyint(0, 19, 1)],
               serial_number=fake.pystr(max_chars=15),
               item_type='AG',
               instance_id=a).save()
@@ -99,7 +98,7 @@ def test_assets(asset_groups):
     # rebuildable assets
     for a in range(40, 100):
         Asset(asset_number=fake.company(),
-              asset_group=asset_groups[fake.pyint(0, 19, 1)],
+              asset_group=ag[fake.pyint(0, 19, 1)],
               serial_number=fake.pystr(max_chars=15),
               item_type='RB',
               instance_id=a).save()
@@ -110,17 +109,16 @@ def test_assets(asset_groups):
         a.parent_instance_id = p
         a.save()
 
-    pass
-
 
 def setup():
     Parameter(name='is_sync_hierarchy', parameter_type='B', boolean_value=True).save()
-    # assets()
+    build_assets()
 
-# def test_get_parameter_value():
-#     assert get_parameter_value('is_sync_hierarchy') is True
-#
-#
-# def test_set_parameter_value():
-#     set_parameter_value('test_text_value', 'T', 'test')
-#     assert Parameter.objects.get(name='test_text_value').text_value == 'test'
+
+def test_get_parameter_value():
+    assert get_parameter_value('is_sync_hierarchy') is True
+
+
+def test_set_parameter_value():
+    set_parameter_value('test_text_value', 'T', 'test')
+    assert Parameter.objects.get(name='test_text_value').text_value == 'test'
