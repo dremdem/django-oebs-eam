@@ -16,8 +16,6 @@ def index(request):
     Main page
     """
 
-
-
     # synchronize a hierarchy
     is_sync_hierarchy = get_parameter_value('is_sync_hierarchy', default_value=True)
     if is_sync_hierarchy:

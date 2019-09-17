@@ -81,24 +81,34 @@ def test_assets(asset_groups):
         a.save()
 
 
-    #
-    # # MC assets
-    # for a in range(15, 40):
-    #     Asset(asset_number=fake.company(),
-    #           asset_group=asset_groups[fake.pyint(0, 19, 1)],
-    #           serial_number=fake.pystr(max_chars=15),
-    #           item_type='AG',
-    #           instance_id=a).save()
-    #
-    # # rebuildable assets
-    # for a in range(40, 100):
-    #     Asset(asset_number=fake.company(),
-    #           asset_group=asset_groups[fake.pyint(0, 19, 1)],
-    #           serial_number=fake.pystr(max_chars=15),
-    #           item_type='RB',
-    #           instance_id=a).save()
+    # MC assets
+    for a in range(15, 40):
+        Asset(asset_number=fake.company(),
+              asset_group=asset_groups[fake.pyint(0, 19, 1)],
+              serial_number=fake.pystr(max_chars=15),
+              item_type='AG',
+              instance_id=a).save()
 
-    #
+    # connect MC to structure
+    for a in Asset.objects.all()[15:]:
+        p = get_random_parent_asset(a.instance_id, 1, 15)
+        a.parent_instance_id = p
+        a.save()
+
+
+    # rebuildable assets
+    for a in range(40, 100):
+        Asset(asset_number=fake.company(),
+              asset_group=asset_groups[fake.pyint(0, 19, 1)],
+              serial_number=fake.pystr(max_chars=15),
+              item_type='RB',
+              instance_id=a).save()
+
+    # connect RB to MC
+    for a in Asset.objects.all()[40:]:
+        p = get_random_parent_asset(a.instance_id, 15, 40)
+        a.parent_instance_id = p
+        a.save()
 
     pass
 
